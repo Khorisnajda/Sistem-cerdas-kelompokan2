@@ -28,10 +28,17 @@ if "edit_index" not in st.session_state:
 # AKUN (username: (password, role))
 # ─────────────────────────────────────────────
 USERS = {
-    "admin": ("admin123",  "admin"),
-    "budi":  ("budi2024",  "mahasiswa"),
-    "siti":  ("siti2024",  "mahasiswa"),
-    "andi":  ("andi2024",  "mahasiswa"),
+    "admin":      ("admin123",  "admin"),
+    "2313010642": ("samhan642", "mahasiswa"),  # Ahmad Samhan
+    "2313010623": ("khoris623", "mahasiswa"),  # Khoris Najda
+    "2313010636": ("bagas636",  "mahasiswa"),  # Bagas Dzaki
+}
+
+# Mapping NIM → Nama lengkap
+NAMA_MAHASISWA = {
+    "2313010642": "Ahmad Samhan",
+    "2313010623": "Khoris Najda",
+    "2313010636": "Bagas Dzaki",
 }
 
 # ─────────────────────────────────────────────
@@ -78,9 +85,11 @@ def halaman_login():
                     st.error("❌ Username atau password salah!")
 
             st.divider()
-            st.caption("**Akun Demo:**")
-            st.caption("👑 Admin      → `admin` / `admin123`")
-            st.caption("🎓 Mahasiswa  → `budi`  / `budi2024`")
+            st.caption("**Akun Login:**")
+            st.caption("👑 Admin        → `admin` / `admin123`")
+            st.caption("🎓 Ahmad Samhan → `2313010642` / `samhan642`")
+            st.caption("🎓 Khoris Najda → `2313010623` / `khoris623`")
+            st.caption("🎓 Bagas Dzaki  → `2313010636` / `bagas636`")
 
 # ─────────────────────────────────────────────
 # SIDEBAR
@@ -290,17 +299,19 @@ def halaman_data():
 # ─────────────────────────────────────────────
 def halaman_nilai_saya():
     st.title("📋 Nilai Saya")
-    username = st.session_state.username
+    username = st.session_state.username  # berisi NIM mahasiswa
+    nama_tampil = NAMA_MAHASISWA.get(username, username)
     data     = st.session_state.mahasiswa
 
-    # Cocokkan nama mahasiswa dengan username login
-    milik = [m for m in data
-             if m["nama"].lower() == username.lower()
-             or m["nim"].lower()  == username.lower()]
+    st.markdown(f"### 👤 {nama_tampil}  |  NIM: `{username}`")
+    st.divider()
+
+    # Cocokkan berdasarkan NIM login
+    milik = [m for m in data if m["nim"] == username]
 
     if not milik:
         st.info(
-            f"Belum ada data nilai atas nama **{username}**.  \n"
+            f"Belum ada data nilai untuk NIM **{username}** ({nama_tampil}).  \n"
             "Hubungi admin untuk input nilai."
         )
         return
